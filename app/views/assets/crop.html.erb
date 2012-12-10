@@ -1,0 +1,148 @@
+<% if @asset.is_a? Image %>
+	<% random_id = rand(10**4) %>
+	<% aspect_ratio_hash = @asset.class.aspect_ratio_hash  %>
+	<% preview_aspect_ratio_hash = @asset.class.preview_aspect_ratio_hash  %>
+
+	<% rw = preview_aspect_ratio_hash[:x]  %>
+	<% rh = preview_aspect_ratio_hash[:y]  %>
+
+	<% ow = @asset.attachment_width %>
+	<% oh = @asset.attachment_height %>
+
+	<% sw = ow.to_f > 400 ? 400 : ow.to_f  %>
+	<% sh = (oh.to_f * sw.to_f)/(ow).to_f %>
+
+	<% cw = (aspect_ratio_hash[:x].to_f * sw.to_f).to_f/ow.to_f %>
+	<% ch = (aspect_ratio_hash[:y].to_f * cw.to_f).to_f/aspect_ratio_hash[:x].to_f %>
+
+	<% cwx = sw.to_f %>
+	<% chx = (aspect_ratio_hash[:y] * cwx).to_f/aspect_ratio_hash[:x].to_f %>
+
+	<% pw = rw > 400 ? 400 : rw %>
+	<% ph = (rh.to_f*pw.to_f)/rw.to_f %>
+
+
+	<% scale = (ow.to_f/sw.to_f) %>
+	<div id="outer">
+		<!--<div style="padding-left:20px;" class='font14'>Original Image Size : <%= ow %>x<%= oh %></div>
+		<div style="padding-left:20px;" class='font14'>Required Minimum Image Size : <%= aspect_ratio_hash[:x] %>x<%= aspect_ratio_hash[:y] %></div>
+		<div style="padding-left:20px;" class='font14'>Scaled Image Size : <%= sw %>x<%= sh %></div>
+		<div style="padding-left:20px;" class='font14'>Crop Box Image Size : <%= cw %>x<%= ch %></div>-->
+		<div class="error" id="crop_error_<%= @asset.id %>"></div>
+		<div class="jcExample">
+			<div class="article">
+				<table>
+					<tr>
+						<td>
+							<div style="padding-left:20px;" class='font14'>Drag your mouse to select crop area</div>
+							<div style="border-right:1px solid #ddd;padding-right:10px">
+								<img src="<%= @asset.url %>" id="cropbox_<%= random_id %>" width="<%= sw %>"  height="<%= sh %>"/>
+							</div>
+						</td>
+						<td>
+							<div style="width:<%= pw %>px;height:<%= ph %>px;overflow:hidden;border:1px solid #ddd;margin-left:10px;">
+								<img src="<%= @asset.url %>" id="preview" />
+							</div>
+						</td>
+					</tr>
+				</table>
+			</div>
+			<%= form_for(@asset, :url => "/assets/crop_image", :remote => true, :html => {:id => "crop_form"}) do |f| %>
+				<input name='id' value="<%= @asset.id %>" type='hidden'/>
+				<%= f.hidden_field :x1, :id => "input_x1" %>
+				<%= f.hidden_field :y1, :id => "input_y1" %>
+				<%= f.hidden_field :width, :id => "input_x2" %>
+				<%= f.hidden_field :height, :id => "input_y2" %>
+				<%= f.hidden_field :scale, :value => "#{scale}" %>
+				<%= f.submit "Crop", :id => "crop_submit", :class => "red_btn_r" %>
+				<img src="<%= asset_path('fb_loader_small.gif') %>" style="display:none;" id="crop_loader"/>
+			<% end %>
+			<div class="clr"></div>
+		</div>
+	</div>
+	<script language="Javascript">
+		jQuery(document).ready(function(){
+				add_ajax_loader_event("crop_form","crop_loader","crop_submit");
+				$(document).bind('cbox_complete', function(){
+
+					//jQuery('#cropbox_<%= random_id %>').Jcrop({
+					//	onChange: showPreview,
+					//	onSelect: showPreview,
+					//	aspectRatio: <%= scale %>,
+					//	setSelect:   [ 0,0,<%= cwx %>, <%= chx %>],
+					//	minSize: [<%= cw %>, <%= ch %>]
+					//}, function(){
+					//	jcrop_api = this;
+					//});	
+
+					$('#cropbox_<%= random_id %>').imgAreaSelect({
+							x1: 0, 
+							y1: 0, 
+							x2: <%= cwx %>, 
+							y2: <%= chx %>,
+							handles: true,
+							onSelectEnd: someFunction,
+							aspectRatio: '<%= aspect_ratio_hash[:x] %>:<%= aspect_ratio_hash[:y] %>',
+							minHeight: <%= ch %>,
+							minWidth: <%= cw %>
+					});
+			});
+		});
+
+		function someFunction(img, selection){
+			var rx = <%= pw %> / selection.width;
+			var ry = <%= ph %> / selection.height;
+		
+			var cox = (<%= ow %> * selection.x1)/<%= sw %>;
+			var coy = (<%= oh %> * selection.y1)/<%= sh %>;
+		
+			var cow = (<%= ow %> * selection.width)/<%= sw %>;
+			var coh = (<%= oh %> * selection.height)/<%= sh %>;
+		
+			$("#input_x1").val(cox);
+			$("#input_y1").val(coy);
+			$("#input_x2").val(cow);
+			$("#input_y2").val(coh);    
+		
+			jQuery('#preview').css({
+				width: Math.round(rx * <%= sw %>) + 'px',
+				height: Math.round(ry * <%= sh %>) + 'px',
+				marginLeft: '-' + Math.round(rx * selection.x1) + 'px',
+				marginTop: '-' + Math.round(ry * selection.y1) + 'px'
+			});
+		}
+
+		// Our simple event handler, called from onChange and onSelect
+		// event handlers, as per the Jcrop invocation above
+		function showPreview(coords)
+		{
+			if (parseInt(coords.w) > 0)
+			{
+				var rx = <%= pw %> / coords.w;
+				var ry = <%= ph %> / coords.h;
+			
+				var cox = (<%= ow %> * coords.x)/<%= sw %>;
+				var coy = (<%= oh %> * coords.y)/<%= sh %>;
+			
+				var cow = (<%= ow %> * coords.w)/<%= sw %>;
+				var coh = (<%= oh %> * coords.h)/<%= sh %>;
+			
+				$("#input_x1").val(cox);
+				$("#input_y1").val(coy);
+				$("#input_x2").val(cow);
+				$("#input_y2").val(coh);    
+			
+				jQuery('#preview').css({
+					width: Math.round(rx * <%= sw %>) + 'px',
+					height: Math.round(ry * <%= sh %>) + 'px',
+					marginLeft: '-' + Math.round(rx * coords.x) + 'px',
+					marginTop: '-' + Math.round(ry * coords.y) + 'px'
+				});
+			}
+		}
+	</script>
+<% else %>	
+	<div>
+		<%= @asset.attachment_file_name %>
+	</div>
+<% end %>

@@ -1,0 +1,21 @@
+<div class="shopping-product-panel">
+	<div class="product-rotating-banner">
+	<a href=""><img src="<%= asset_path('ipad-banner.jpg') %>"></a>
+	<div>iPad</div>
+</div>
+<br/>
+
+<% CATEGORIES.each do |category| %>
+	<div class="home-category-div">
+		<div class="category-title-div">
+			<strong><%= category %> </strong>
+			<a href="/site/products?category=<%= category %>"><span>View All</span></a>
+		</div>
+		<div class="category-top-product-div">
+			<% Product.where(:category => category).limit(4).each do |product| %>
+				<%= render :partial => "products/snap", :locals => { :product => product } %>
+			<% end %>
+			<div class="clr"></div>
+		</div>
+	</div>
+<% end %>

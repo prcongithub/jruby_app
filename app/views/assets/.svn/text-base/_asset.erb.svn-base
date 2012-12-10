@@ -1,0 +1,4 @@
+<% if asset.is_a? Image %>
+	<%= render :partial => "assets/image", :locals => {:asset => asset} %>
+<% end %>
+

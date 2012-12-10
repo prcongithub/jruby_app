@@ -1,0 +1,88 @@
+<% wait_for_upload = (defined?(wait_for_upload) ? wait_for_upload : false) %>
+<% types.each do |type| %>
+	<% asset_type = entity.reflections[type.to_sym].class_name %>
+	<% asset_class = eval(asset_type) %>
+	<script type="text/javascript" charset="utf-8">
+		<%- session_key = Rails.application.config.session_options[:key] -%> 
+		jQuery(document).ready(function(jQuery) {
+			<% types.each do |type| %>
+				jQuery('#<%= entity.id %>_<%= type %>').click(function(event){
+					event.preventDefault();
+				});
+			
+				var csrf_token = jQuery('meta[name=csrf-token]').attr('content');
+				var csrf_param = jQuery('meta[name=csrf-param]').attr('content');
+				jQuery('#<%= entity.id %>_<%= type %>').uploadify({
+					'swf'  		: '<%= asset_path("uploadify/uploadify.swf") %>',
+					'uploader'    		: '<%= get_domain %>/assets/add',
+					'multi'      		: false,
+					'cancelImg'			: "<%= asset_path('cancel.png') %>",
+					<% if wait_for_upload %>
+						'auto'				: false,
+						'waitForUpload' : true,
+					<% else %>
+						'auto'				: true,
+						'waitForUpload' : false,
+					<% end %>
+					onQueueComplete : function(queueData){
+						showNotice(queueData.uploadsSuccessful +" files uploaded successfully");
+					},
+					onUploadError: function(file, errorCode, errorMsg, errorString) {
+            showNotice('The file ' + file.name + ' could not be uploaded: ' + errorString);
+          },
+					onUploadSuccess : function(file, data, response) { 
+						var dat = eval('(' + data + ')');
+						if(dat.result == "success"){
+							jQuery("#upload_errors_<%= entity.id %>_<%= type %>").hide();
+							jQuery.getScript(dat.asset);
+						}else{
+							var errors =  dat.asset.split(',');
+							var error_message = "";
+							for(var i = 0; i < errors.length; i++){
+								error_message += "<li>" + errors[i] + "</li>"
+							}
+							jQuery("#upload_errors_<%= entity.id %>_<%= type %>").show();
+							jQuery("#upload_errors_<%= entity.id %>_<%= type %>").html("<ul>" + error_message + "</ul>");
+						}
+					},
+					formData: {
+						 '_method': 'post',
+						 'format' : 'json',
+						 'update_div' : "<%= entity.id %>_<%= type %>_image",
+						 'attachable_id' : '<%= wait_for_upload ? '' : entity.id %>',
+						 'attachable_type' : '<%= entity.class.to_s %>',
+						 'asset_type'			  : '<%= asset_type %>',
+						 'authenticity_token': "<%= form_authenticity_token %>",
+						 'user_id' : '<%= current_user.id %>',
+						 'group_id' : '<%= type %>'
+			 		}
+				});
+				jQuery('#<%= entity.id %>_<%= type %>_submit').click(function(event){
+					event.preventDefault();
+					jQuery("#<%= entity.id %>_<%= type %>").uploadifyUpload();
+				});
+			<% end %>
+		});
+	</script>	  
+	<div class="box">
+		<div class="font16">
+			<strong><%= type.capitalize %></strong>
+		</div>
+		<div>Images should be <%= asset_class.aspect_ratio_hash[:x] %>x<%= asset_class.aspect_ratio_hash[:y] %> px or larger</div>
+		<div style="display:block">
+			<div id="<%= entity.id %>_<%= type %>">
+			</div>
+			<div class="clr"></div>
+		</div>
+		<div id="upload_errors_<%= entity.id %>_<%= type %>" class="error">	</div>
+		<br clear="all"/>		
+		<ul id="<%= entity.id %>_<%= type %>_image" style="display:block;width:100%">
+			<% asset = eval("entity.#{type}") %>
+			<% if asset %>
+				<%= render :partial => "assets/asset", :locals => {:asset => asset} %>
+			<% end %>
+			<div class="clr"></div>
+		</ul>
+	</div>
+<% end %>
+<div class="clr"></div>

@@ -1,0 +1,6 @@
+<% if @success %>
+	$("#user_preference_form").html("Your preference for this product is <%= @user_preference.preference %>");
+<% else %>
+	$("#user_preference_form").replaceHtml("<%= escape_javascript(render('user_preferences/form')) %>");
+<% end %>
+

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Online Shopping Portal - Mahout Recommendation</title>
+		<%= stylesheet_link_tag    "application", :media => "all" %>
+		<%= javascript_include_tag "application" %>
+		<%= render :partial => "layouts/includes" %>
+		<%= csrf_meta_tags %>
+	</head>
+	<body>
+		<div class="wrapper">	
+			<%= render :partial => "layouts/header" %>
+			<section>
+				<div class="shopping-content-div">
+					<div class="left-panel-div">
+						<%= render :partial => "layouts/sidebar" %>
+					</div>
+					<div class="right-panel">
+						<div class="shopping-search-tool">
+							<div class="shopping-categories-div">All Categories</div>
+							<div class="shopping-search-box">
+								<input type="text" id="txt_search" style="height: 18px;" class="search-box" placeholder="search for a brand, specific item, product"/>
+							</div>
+							<div class="search-btn" id="main_search_btn">Search</div>
+							<div class="clr"></div>
+						</div>
+						<div class="clr"></div>
+						<div style="margin-top:20px;">
+							<%= yield %>
+						</div>
+						<% if current_user %>
+							<br/><br/>
+							<div class="category-top-product-div">
+								<div class="font14 bold">
+									Recommended Products
+								</div>
+								<% get_recommended_products(4).each do |product| %>
+									<%= render :partial => "products/snap", :locals => { :product => product } %>
+								<% end %>
+								<div class="clr"></div>
+							</div>
+						<% end %>
+					</div>	
+					<div class="clr"></div>
+				</div>
+			</section>
+			<div class="clr"></div>
+			<%= render :partial => "layouts/footer" %>
+		</div>
+		<script type="text/javascript">
+			$("#main_search_btn").click(function(){
+				search();
+			});
+			
+			function search(){
+				var term = $("#txt_search").val();
+				if(term != ""){
+					window.location = "/site/products?search[name_like]="+term;
+				}
+			}
+			
+			$("#txt_search").keypress(function(e){
+				var key = e.which;
+				if(key == 13){
+					search();
+				}
+			});
+		</script>
+	</body>
+</html>

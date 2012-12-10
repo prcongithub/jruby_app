@@ -1,0 +1,2 @@
+jQuery("#main_assets_for_#{@class_name.downcase}").html("<%= escape_javascript( render :partial=>"assets/multiple_assets", :locals => {:types => @entity.class.multiple_asset_types, :entity => @entity, :asset_type => "EImage"}) %>");
+alert("Reordered successfully!");

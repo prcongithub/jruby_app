@@ -1,0 +1,11 @@
+<li class="ui-state-default fl" id="main_holding_li_<%= asset.id %>" style="list-style:none;">
+	<div class="upload fl" id="main_holdeing_div_<%= asset.id %>" style="padding:5px;">
+	  	<a>
+			<%= image_tag MISSING_URL, :style => "max-width:80px; max-height:80px;" %><br/>
+			<span title="<%= asset.attachment_file_name %>"><%= asset.attachment_file_name[0..50] %></span><br/>
+		</a>
+		<br/>
+		<%= link_to "Download", download_asset_path(asset) %>
+	</div>
+	<div class="clr"></div>
+</li>

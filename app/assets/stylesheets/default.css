@@ -1,0 +1,100 @@
+@charset "utf-8";
+html, head, body, div, span, p, h1, h2, h3, h4, h5, h6, strong, em,  br, a, img,  ul, li, dl, dt, dd, form,  label, fieldset, legend,b 
+{
+margin: 0;
+padding: 0;
+font-family: 'Belleza', sans-serif;
+font-size:13px;
+}
+
+img{ border:0;}
+a{ text-decoration:none}
+p{ padding:5px 0 5px 0;}
+
+
+ul{ list-style:none}
+.fl{ float:left}
+.fr{ float:right}
+.width10{ width:9%}
+.width15{ width:14%}
+.width20{ width:19%}
+.width30{ width:29%}
+.width40{ width:39%}
+.width50{ width:49%}
+.width60{ width:59%}
+.width70{ width:69%}
+.width80{ width:79%}
+.width90{ width:89%}
+.width33{ width:33%}
+.width35{ width:34%}
+.width55{ width:54%}
+.width25{ width:24%}
+.width45{ width:44%}
+.width47{ width:47%}
+.width75{ width:74%}
+.width65{ width:64%}
+.width33{ width:32%}
+.width67{ width:66%}
+.width53{ width:52%}
+.width34{ width:33%}
+.width26{ width:25%}
+.width71{ width:70%}
+.width21{ width:20%}
+.width19{ width:18%}
+.width61{ width:60%}
+
+.padTop5{ padding-top:5px;}
+.padBottom5{ padding-bottom:5px;}
+.padTop10{ padding-top:10px;}
+.padLeft10{ padding-left:10px;}
+.padAll10{ padding:10px;}
+.padLeft15{ padding-left:15px;}
+.padAll15{ padding:15px;}
+.padTop15{ padding-top:5px;}
+.padTop5{ padding-top:5px;}
+.padAll5{ padding:5px;}
+.padLeft5{ padding-left:5px;}
+
+.marTop10{ margin-top:10px;}
+.marLeft10{ margin-left:10px;}
+
+.marAll10{ margin:10px;}
+.marTop15{ margin-top:15px;}
+.marLeft15{ margin-left:15px;}
+.marAll15{ margin:15px;}
+.marTop5{ margin-top:5px;}
+.marLeft5{ margin-left:5px;}
+.marAll5{ margin:5px;}
+.marLeft25{ margin-left:25px;}
+.marRight10{ margin-right:10px;}
+.marBottom5{ margin-bottom:5px;}
+.marBottom10{ margin-bottom:10px;}
+
+.font10{ font-size:10px}
+.font11{ font-size:11px}
+.font12{ font-size:12px}
+.font13{ font-size:13px}
+.font14{ font-size:14px}
+.font15{ font-size:15px}
+.font16{ font-size:16px}
+.font18{ font-size:18px}
+.font20{ font-size:20px}
+.font24{ font-size:24px}
+.font30{ font-size:30px}
+.font60{ font-size:60px;}
+
+.spacer{ clear:both; height:0; margin:0}
+.clr{ clear:both; height:0; margin:0}
+.req_textbox{}
+.blue-font{ color:#34577E}
+.Bdr{ border:solid 1px #006}
+.black{color:#000;}
+
+
+.red_taxon_option{
+	font-weight:bold; 
+	color:#F00;
+	background:#EEEEEE;
+}
+/* CSS Document */
+

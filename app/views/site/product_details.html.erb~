@@ -1,0 +1,52 @@
+<div class="product-details-div">
+	<% if @product.photos.present? %>
+		<div id="product_carousel" class="carousel slide">
+			<div class="carousel-inner">
+				<% @product.photos.each_with_index do |image,index| %>
+					<div class="item <%= index == 0 ? 'active':'' %>">
+						<%= image_tag((image.url(:original) rescue asset_path('missing_logo.jpg')), :style => "width:600px;height:400px;") %>
+					</div>
+				<% end %>	
+			</div>
+			<a class="carousel-control left" href="#product_carousel" data-slide="prev">&lsaquo;</a>
+			<a class="carousel-control right" href="#product_carousel" data-slide="next">&rsaquo;</a>
+		</div>
+	<% end %>
+	<div>
+		<div class="fl width45">
+			<div>
+				<%= @product.name %>
+			</div>
+			<div>
+				Price : Rs. <%= @product.price %>
+			</div>
+			<div>
+				<%= @product.description.html_safe rescue '-' %>
+			</div>
+		</div>
+		<div class="fr width45">
+			<%= render :partial => "products/rating", :locals => { :product => @product } %>
+		</div>
+	</div>
+	<div class="clr"></div>
+</div>
+<% if current_user %>
+	<br/><br/>
+	<div class="category-top-product-div">
+		<div class="font14 bold">
+			Recommended Products
+		</div>
+		<% get_recommended_products(4).each do |product| %>
+			<%= render :partial => "products/snap", :locals => { :product => product } %>
+		<% end %>
+		<div class="clr"></div>
+	</div>
+<% end %>
+<script type="text/javascript">
+	$(document).ready(function(){
+		<% if @product.photos.present? %>
+			$("#product_carousel").carousel();
+		<% end %>	
+	});
+</script>
+

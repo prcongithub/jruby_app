@@ -1,0 +1,70 @@
+<% crop = defined?(@crop) ? @crop : false %>
+<% choose_label = false if not defined?(choose_label) %>
+<li class="ui-state-default fl" id="main_holding_li_<%= asset.id %>" style="list-style:none;">
+	<% if choose_label %>
+		<div style="text-align:center;color:black;">
+			<label class="ptr" style="display:none;" id="label_<%= asset.id %>"><%= asset.name.present? ? asset.name : 'Choose Label' %></label>
+			<select id="select_label_<%= asset.id %>">
+				<option>Select Label</option>
+				<% IMAGE_NAME_OPTIONS.each do |label| %>
+					<option value="<%= label %>"><%= label %></option>
+				<% end %>
+			</select>
+		</div>
+	<% end %>
+	<div class="upload fl" id="main_holdeing_div_<%= asset.id %>" style="padding:5px;">
+	  	<a  id="crop_image_<%=asset.id %>" href="/assets/crop?id=<%= asset.id %>">
+			<%= image_tag asset.url(), :style => "max-width:80px; max-height:80px;" %>
+		</a>
+		<br/>
+		<% if can? :destroy, asset %>
+			<%= link_to 'Delete', "/assets/#{asset.id}/destroy", :confirm => 'Are you sure, you want to delete this image?', :method => :delete, :remote => true %>
+	  	<% end %>
+		<% if (asset.attachment_width and asset.attachment_height) and (asset.attachment_width > asset.class.aspect_ratio_hash[:x] and asset.attachment_height > asset.class.aspect_ratio_hash[:y]) %>
+			<%= link_to 'Crop',"/assets/crop?id=#{asset.id}", :id => "crop_#{asset.id}" %>
+		<% end %>
+	</div> 
+	<div class="clr"></div>
+</li>
+<script type="text/javascript">
+	jQuery(document).ready(function(){
+		$("#label_<%= asset.id %>").click(function(){
+			$("#label_<%= asset.id %>").hide();
+			$("#select_label_<%= asset.id %>").show();
+		});
+
+		$("#select_label_<%= asset.id %>").change(function(){
+			var label = $("#select_label_<%= asset.id %>").val();
+			if(label != null && label != ""){
+				var hash = {};
+				hash["id"] = "<%= asset.id %>";
+				hash["asset"] = {};
+				hash["asset"]["name"] = label;
+				jsRequest("/assets/update/",hash);
+			}
+			
+		});
+
+		$("#select_label_<%= asset.id %>").blur(function(){
+			$("#label_<%= asset.id %>").show();
+			$("#select_label_<%= asset.id %>").hide();
+		});
+
+		$("#select_label_<%= asset.id %>").val("<%= asset.name %>");
+
+		$("#crop_<%= asset.id %>").colorbox(crop_colorbox_hash);	
+		$("#crop_image_<%= asset.id %>").colorbox(crop_colorbox_hash);	
+		
+		<% if crop.to_s == "true" %>
+			jQuery("#crop_<%= asset.id %>").click();
+		<% end %>
+		
+		$("#preview_asset_colorbox_<%= asset.id %>").colorbox(preview_asset_colorbox_hash);	
+	
+		$(document).bind('cbox_closed', function(){
+			jQuery(".imgareaselect-outer").remove();
+			jQuery(".imgareaselect-selection").parent().remove();
+		});
+	});
+</script>
+

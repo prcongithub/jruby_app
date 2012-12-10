@@ -1,0 +1,18 @@
+<% types.each do |type| %>
+	<% asset_type = entity.reflections[type.to_sym].class_name %>
+	<% asset_class = eval(asset_type) %>
+	<div class="box">
+		<div class="font16">
+			<strong><%= type.titleize %></strong>
+		</div>
+		<br clear="all"/>		
+		<ul style="display:block;width:100%">
+			<% asset = eval("entity.#{type}") %>
+			<% if asset %>
+				<%= render :partial => "assets/asset", :locals => {:asset => asset} %>
+			<% end %>
+			<div class="clr"></div>
+		</ul>
+	</div>
+<% end %>
+<div class="clr"></div>

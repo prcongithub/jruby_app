@@ -1,0 +1,31 @@
+class Pdf < Asset
+  validate :no_attachement_errors
+  has_attached_file :attachment,
+                    :url => "/system/data/:id/:style/:basename.:extension",
+                    :path => ":rails_root/public/system/data/:id/:style/:basename.:extension"
+
+
+	has_many :photos, :as => :attachable, :class_name => "Image", :dependent => :destroy, :conditions => { :group_id => "images" }
+	has_one :logo, :as => :attachable, :class_name => "Image", :dependent => :destroy, :conditions => { :group_id => "logo" }
+
+	def data
+		return self.attachment
+	end
+	
+	def path(style=:original)
+		attachment.path(style.to_sym)
+	end
+	
+	def url style=:original
+		attachment.url(style.to_sym, false)
+	end
+	
+	def no_attachement_errors
+		unless attachment.errors.empty?
+			# uncomment this to get rid of the less-than-useful interrim messages
+			# errors.clear
+			errors.add :attachment, "Paperclip returned errors for file '#{attachment_file_name}' - check ImageMagick installation or image source file."
+			false
+		end
+	end
+end

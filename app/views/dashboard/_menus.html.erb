@@ -1,0 +1,7 @@
+<ul class="dashboard_menu_ul">
+	<% if current_user and current_user.is_a? Admin %>
+		<li>
+			<%= link_to "Products", products_path, :class => "" %>
+		</li>
+	<% end %>
+</ul>

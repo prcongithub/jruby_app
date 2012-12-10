@@ -1,0 +1,5 @@
+<% if @multiple == 'true' %>
+	jQuery('#<%= @update_div %>').prepend("<%= escape_javascript(render :partial => 'assets/asset', :locals => {:asset => @asset, :choose_label => @choose_label}) %>");
+<% else %>
+	jQuery('#<%= @update_div %>').html("<%= escape_javascript(render :partial => 'assets/asset', :locals => {:asset => @asset, :choose_label => @choose_label}) %>");
+<% end %>

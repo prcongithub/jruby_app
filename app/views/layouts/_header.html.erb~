@@ -1,0 +1,25 @@
+<header>	
+	<div class="header-wrap">
+		<div class="shopping-logo">
+			<a href="/"><img height="75" src="<%= asset_path('logo_dummy.png') %>"></a>	
+		</div>
+		<div class="header-menu-div">
+			<ul>
+				<li><a href="">Subscribe</a></li>
+				<li><a href="">What's New</a></li>
+				<li><a href="">Track Your Order</a></li>
+				<li><a href="">Customer Support</a></li>
+				<% if current_user %>
+					<li><a style="border:none;" href="<%= dashboard_path %>">My Account</a></li>
+					<li><a style="border:none;" href="<%= destroy_user_session_path %>">Logout</a></li>
+				<% else %>
+					<li><a style="border:none;" href="<%= new_user_session_path %>">Login</a></li>
+					<li><a style="border:none;" href="<%= new_registration_path(:user) %>">Register</a></li>
+				<% end %>
+			</ul>
+		</div>
+		<div class="clr"></div>
+	</div>
+	<div class="clr"></div>
+</header>
+

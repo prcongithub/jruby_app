@@ -1,0 +1,1 @@
+jQuery('#uploaded_assets').append("<div>ketan</div>");

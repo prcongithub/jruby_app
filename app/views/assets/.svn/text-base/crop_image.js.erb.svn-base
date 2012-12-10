@@ -1,0 +1,9 @@
+jQuery("#crop_loader").hide();
+jQuery("#crop_submit").show();
+<% if @success %>
+	jQuery("#success_div").html("Image Cropped Successfully");
+	jQuery("#main_holding_li_<%= @asset.id %>").replaceWith("<%= escape_javascript(render :partial => 'assets/asset', :locals => {:asset => @asset}) %>");
+	$.fn.colorbox.close();
+<% else %>
+	jQuery("#crop_error_<%= @asset.id %>").html("<%= escape_javascript(render(:partial => "shared/error_messages", :locals => {:target => @asset})) %>");
+<% end %>

@@ -1,0 +1,9 @@
+<h1>Editing product</h1>
+
+<%= render 'form' %>
+
+<%= render :partial => "assets/singular_assets", :locals => { :entity => @product, :types => ["logo"] } %>
+<%= render :partial => "assets/multiple_assets", :locals => { :entity => @product, :types => ["photos"] } %>
+
+<%= link_to 'Show', @product %> |
+<%= link_to 'Back', products_path %>

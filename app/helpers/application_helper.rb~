@@ -1,0 +1,19 @@
+module ApplicationHelper
+	def get_host
+		return get_domain
+	end
+	
+	def get_domain
+    if Rails.env == "staging"
+			base_url = "http://shop.truespider.com"  
+		elsif Rails.env == "production"
+			#base_url = "http://shop.truespider.com"
+			base_url = "http://#{LOCAL_IP}:3022"  
+		elsif Rails.env == "development"
+			base_url = "http://#{LOCAL_IP}:3022"
+		elsif Rails.env == "test"
+			base_url = "http://#{LOCAL_IP}:3022" 	 
+		end
+		base_url
+  end
+end

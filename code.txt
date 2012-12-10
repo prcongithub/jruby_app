@@ -1,0 +1,86 @@
+package com.ibm.recommender.sample;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Iterator;
+
+import javax.annotation.Resource;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.sql.DataSource;
+
+import org.apache.mahout.cf.taste.common.TasteException;
+import org.apache.mahout.cf.taste.impl.model.jdbc.PostgreSQLJDBCDataModel;
+import org.apache.mahout.cf.taste.impl.neighborhood.NearestNUserNeighborhood;
+import org.apache.mahout.cf.taste.impl.recommender.GenericUserBasedRecommender;
+import org.apache.mahout.cf.taste.impl.similarity.LogLikelihoodSimilarity;
+import org.apache.mahout.cf.taste.model.DataModel;
+import org.apache.mahout.cf.taste.neighborhood.UserNeighborhood;
+import org.apache.mahout.cf.taste.recommender.RecommendedItem;
+import org.apache.mahout.cf.taste.recommender.Recommender;
+import org.apache.mahout.cf.taste.similarity.UserSimilarity;
+
+/**
+ * Servlet implementation class TestServlet
+ */
+@WebServlet( name="TestServlet", urlPatterns={"/TestServlet"} )
+public class TestServlet extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+	private @Resource (name="jdbc/taste",
+            			lookup="jdbc/taste",
+            			authenticationType=Resource.AuthenticationType.APPLICATION,
+            			shareable=false) DataSource tasteDS;
+       
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public TestServlet() {
+        super();
+    }
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		PrintWriter out = response.getWriter();
+		
+		DataModel dataModel;
+		int USER_ID = 400;
+		
+		try {
+		
+			// create the data model object
+			dataModel = 
+			  new PostgreSQLJDBCDataModel(tasteDS, "PREFERENCES.TASTE_PREFERENCES", "USER_ID", "ITEM_ID", "PREFERENCE", "TIMESTAMP");
+			
+			out.println("<table>");
+			out.println("<tr><th colspan=2>Used based recommendations</th></tr>");
+			out.println("<tr><td>User id:</td><td>" + USER_ID + "</td></tr>");
+			out.println("<tr><td>This user rated:</td><td>" + dataModel.getItemIDsFromUser(USER_ID).size() + " items</td></tr>");
+			
+			UserSimilarity similarity = //new PearsonCorrelationSimilarity(dataModel);
+				new LogLikelihoodSimilarity(dataModel);
+			UserNeighborhood neighborhood = new NearestNUserNeighborhood(5, similarity, dataModel);
+			Recommender recommender = new GenericUserBasedRecommender(dataModel, neighborhood, similarity);
+
+			out.println("<tr><th colspan=2>Recommendations</th></tr>");
+			out.println("<tr><th>item_id</th><th>similarity</th></tr>");
+
+			java.util.List<RecommendedItem> list = recommender.recommend(USER_ID, 10);
+			Iterator<RecommendedItem>iter = list.iterator();
+			
+			while ( iter.hasNext()) {
+				RecommendedItem item = iter.next();
+				out.println("<tr><td>" + item.getItemID() + "</td><td>" + item.getValue() + "</td></tr>");
+			}
+			
+			out.println("</table>");
+			
+		} catch (TasteException e) {
+			e.printStackTrace();
+		}
+	}
+}

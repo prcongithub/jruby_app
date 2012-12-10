@@ -1,0 +1,19 @@
+<div>
+	Edit Image
+</div>
+<div id="edit_asset_div">
+	<%= form_for(:asset,:url => '/assets/update', :remote => true, :html => {:id => "edit_asset_form"}) do |f| %>
+		<input type="hidden" id="edit_asset_id" name="id"/>
+		<p>
+			<%= f.label :label %>
+			<%= f.select :name, IMAGE_NAME_OPTIONS %>
+		</p>
+		<p>
+			<%= f.submit "Save", :id => "update_asset_submit" %><%= image_tag("fb_loader_small.gif", :id => "update_asset_loader", :style => "display:none;") %>
+		</p>
+	<% end %>
+</div>
+<script>
+	add_ajax_loader_event("edit_asset_form","update_asset_loader","update_asset_submit");
+</script>
+

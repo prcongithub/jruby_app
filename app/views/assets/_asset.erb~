@@ -1,0 +1,14 @@
+<% if asset.is_a? Image %>
+	<%= render :partial => "assets/image", :locals => {:asset => asset} %>
+<% elsif asset.is_a? Pdf %>
+	<%= render :partial => "assets/pdf", :locals => {:asset => asset} %>
+<% elsif asset.is_a? QuestionsFile %>
+	<%= render :partial => "assets/questions_file", :locals => {:asset => asset} %>
+<% elsif asset.is_a? StudentsFile %>
+	<%= render :partial => "assets/students_file", :locals => {:asset => asset} %>
+<% elsif asset.is_a? AFile %>
+	<%= render :partial => "assets/a_file", :locals => {:asset => asset} %>
+<% elsif asset.is_a? FileUpload %>
+	<%= render :partial => "assets/file_upload", :locals => {:asset => asset} %>
+<% end %>
+

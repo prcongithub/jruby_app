@@ -1,0 +1,21 @@
+<div class="top_products">
+	<div>
+		Top Products
+	</div>
+	<div>
+		<%= render :partial => "products/snap", :collection => @top_products, :as => :product %>
+		<div class="clr"></div>
+	</div>
+</div>
+<div class="recommended_products">
+	<div>
+		Recommendations for you
+	</div>
+	<div>
+		<%= render :partial => "products/snap", :collection => @recommended_products, :as => :product %>
+		<div class="clr"></div>
+	</div>
+	<div>
+		<%= link_to("See All Products","/site/products") %>
+	</div>
+</div>

@@ -1,0 +1,15 @@
+<% if current_user %>
+	<% preference = UserPreference.where(:user_id => current_user.id, :item_id => product.id).first.preference rescue 0 %>
+	<div>
+		<span id="rateStatus_<%= product.id %>" class="rateStatus">Rate Me...</span>
+		<span id="ratingSaved_<%= product.id %>" class="ratingSaved">Rating Saved!</span>
+		<div class="rateMe" title="Rate Me..."  id="rateMe_<%= product.id %>">
+				<a onclick="rateIt(this)" user_id="<%= current_user.id rescue '' %>" product_id="<%= product.id %>" rating="1" class="<%= preference >= 1 ? 'on':'' %> rating_1_<%= product.id %>" title="ehh..." onmouseover="rating(this)" onmouseout="off(this)"></a>
+				<a onclick="rateIt(this)" user_id="<%= current_user.id rescue '' %>" product_id="<%= product.id %>" rating="2" class="<%= preference >= 2 ? 'on':'' %> rating_2_<%= product.id %>" title="Pretty Good" onmouseover="rating(this)" onmouseout="off(this)"></a>
+				<a onclick="rateIt(this)" user_id="<%= current_user.id rescue '' %>" product_id="<%= product.id %>" rating="3" class="<%= preference >= 3 ? 'on':'' %> rating_3_<%= product.id %>" title="Not Bad" onmouseover="rating(this)" onmouseout="off(this)"></a>
+				<a onclick="rateIt(this)" user_id="<%= current_user.id rescue '' %>" product_id="<%= product.id %>" rating="4" class="<%= preference >= 4 ? 'on':'' %> rating_4_<%= product.id %>" title="4 star" onmouseover="rating(this)" onmouseout="off(this)"></a>
+				<a onclick="rateIt(this)" user_id="<%= current_user.id rescue '' %>" product_id="<%= product.id %>" rating="5" class="<%= preference >= 5 ? 'on':'' %> rating_5_<%= product.id %>" title="5 star" onmouseover="rating(this)" onmouseout="off(this)"></a>
+		</div>
+		<div class="clr"></div>
+	</div>
+<% end %>

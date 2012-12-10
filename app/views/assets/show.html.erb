@@ -1,0 +1,1 @@
+jQuery('#sortable_assets_<%= @asset.group_id %>').prepend("<%= escape_javascript(render(:partial => "assets/asset", :locals => {:asset => @asset, :choose_label => @choose_label})) %>");

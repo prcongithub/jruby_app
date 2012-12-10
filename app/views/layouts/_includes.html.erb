@@ -1,0 +1,55 @@
+<script>	
+	AUTH_TOKEN = "<%= form_authenticity_token %>";
+	// Always send the authenticity_token with ajax
+	$(document).ajaxSend(function(event, request, settings) {
+			if ( settings.type.toLowerCase() == 'post') {
+			    settings.data = (settings.data ? settings.data + "&" : "")
+			            + "authenticity_token=" + encodeURIComponent( AUTH_TOKEN );
+			    request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+			}
+	});
+	
+	// When I say html I really mean script for rails
+	$.ajaxSettings.accepts.html = $.ajaxSettings.accepts.script;
+
+	function showNotice(notice){
+		if(notice != null && notice != ""){
+			jQuery("#notice").html(notice);
+			jQuery("#notice_div").slideToggle();
+				setTimeout(function(){
+					jQuery("#notice_div").slideToggle();
+			},10000);
+		}
+	}
+	
+	function add_fields(selector,object_class,association,data){
+		$(selector).append(data);
+	}
+	
+	$(".remove_fields").live("click",function(){
+		var parent_selector = $(this).attr("parent");
+		var child_selector = $(this).attr("child");
+		var new_record = $(this).attr("new_record");
+		if(new_record+"" == "true"){
+			$(child_selector).remove();
+		}else{
+			if($(this).prev().val() + "" === "true"){
+				$(this).prev().val(false);
+				$(child_selector).css("opacity",1);
+			}else{
+				$(this).prev().val(true);
+				$(child_selector).css("opacity",0.5);
+			}
+		}
+	});
+	
+	$(document).ready(function(){
+		$("a[rel='colorbox']").colorbox({width:"75%",height:"75%"});
+		$(".admin_link").each(function(){
+			if($(this).is("a")){
+				$(this).attr("data-remote","true");
+			}
+		});
+	});
+</script>
+	

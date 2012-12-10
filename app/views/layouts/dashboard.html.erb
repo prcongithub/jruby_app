@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Online Shopping Portal - Mahout Recommendation</title>
+		<%= stylesheet_link_tag    "dashboard", :media => "all" %>
+		<%= javascript_include_tag "dashboard" %>
+		<%= render :partial => "layouts/includes" %>
+		<%= csrf_meta_tags %>
+	</head>
+	<body>
+		<div class="wrapper">
+			<div class="header">	
+				<%= render :partial => "layouts/dashboard_header" %>
+			</div>	
+			<div class="content">
+				<div class="fl width20 dashboard_left">
+					<%= render :partial => "dashboard/menus" %>
+				</div>
+				<div class="fr width75 dashboard_right">	
+					<img src="<%= asset_path('ajax-loader-big1.gif') %>" class="center_image" style="display:none;"/>
+					<div id="action_content_div">
+						<%= yield %>	
+					</div>
+				</div>
+				<div class="clr"></div>
+			</div>
+			<div class="footer">	
+				<%= render :partial => "layouts/dashboard_footer" %>    
+			</div>	
+		</div>	
+		<script type="text/javascript">
+			$(".admin_link").live("click",function(){
+				$("#action_content_div").html("");
+				$(".center_image").show();
+			});
+			
+			$(".admin_link").each(function(){
+				if($(this).is("a")){
+					$(this).attr("data-remote","true");
+				}
+			});
+		</script>
+	</body>
+</html>

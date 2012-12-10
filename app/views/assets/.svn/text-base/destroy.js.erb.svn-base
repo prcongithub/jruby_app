@@ -1,0 +1,2 @@
+jQuery("#main_holding_li_<%= @asset_id %>").remove();
+showNotice("Deleted successfully!");

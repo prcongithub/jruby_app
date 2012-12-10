@@ -1,0 +1,113 @@
+<div id="main_assets_for_<%= @for_class.downcase %>">
+	<%= javascript_include_tag "uploadify/swfobject", "uploadify/jquery.uploadify.v2.1.0" %>
+	<% at = eval("#{@for_class.upcase}_ASSET_TYPES") %>
+	<% at.each do |type| %>
+		<% type = "#{type}" %>
+		<div class="admin-asset-box fl" style="width:45%; margin:0 10px;">
+			<div class="admin-sub-title form-subtitles" style="border:none;"><%= type.titleize %> Photos</div>
+			<script>
+				jQuery(document).ready(function($){
+					jQuery(function() {
+						jQuery("#sortable_assets_<%= type %>").sortable({
+						 //update: function(event, ui) {
+						 //  alert(jQuery("#sortable_assets_<%= type %>").sortable('toArray').toString()); 
+						 //}
+							});
+							jQuery("#sortable_assets_<%= type %>").disableSelection();  
+					});
+			
+					$('#reorder_submit_btn_<%= type %>').click(function(event){
+							var order = [];
+							order = jQuery("#sortable_assets_<%= type %>").sortable('toArray');
+							var final_order = "";
+							var final_order = ""
+							for (x = 0; x < order.length; x++){
+								var temp = order[x].substring(16, order[x].length);
+							 final_order +=  (temp + ",");
+						} 
+						if(final_order != ""){	
+							var query = "order_string=" + final_order.substring(0, final_order.length - 1);
+							<%= remote_function(:url => {:controller => :assets, :action => :reorder, :group_id => type, :entity_id => @entity.id, :class_name => @for_class}, :with => "query") %>
+						}
+					});
+				});
+
+				function show_update_asset_<%= type %>(asset_id){
+					var query = "asset_id=" + asset_id;
+					<%= remote_function :url => {:controller => "assets", :action => "show_update_asset"}, :with => "query", :update => "div_for_asset_update_form_#{type}" %>
+				}
+			</script>
+
+			<style>
+				#sortable_assets_<%= type %> { list-style-type: none; margin: 0; padding: 0; }
+				#sortable_assets_<%= type %> li { margin: 3px 3px 3px 0; padding: 1px; float: left; font-size: 1em; text-align: center;  }
+				#sortable_assets_<%= type %> li img {padding:1px; border:1px solid #ccc; cursor: pointer; width:80px;}
+			</style>
+			<script type="text/javascript" charset="utf-8">
+				<%- session_key = Rails.application.config.session_options[:key] -%> 
+				jQuery(document).ready(function($) {
+
+					$('#asset_<%= type %>').click(function(event){
+						event.preventDefault();
+					});
+					$('#asset_<%= type %>').uploadify({
+						'uploader'  		: '/javascripts/uploadify/uploadify.swf',
+						'script'    		: '<%= fc_domain %>/assets/add',
+						'multi'      		: true,
+						'cancelImg'			: '/images/cancel.png',
+						'auto'				: true,
+						onComplete : function(event, queueID, fileObj, response, data) { 
+							jQuery("#reorder_div_<%= type %>").show();
+							var dat = eval('(' + response + ')');
+							jQuery.getScript(dat.asset);
+						},
+						onError         : function(evt, queueid, fobj, eobj){
+		         console.log(evt);
+		         console.log(queueid);
+		         console.log(fobj);
+		         console.log(eobj);
+		      	},
+						scriptData: {
+								 '_method': 'post',
+								'_http_accept': 'application/javascript',
+									'<%= session_key %>' : encodeURIComponent('<%= u cookies[session_key] %>'),
+								 'authenticity_token': encodeURIComponent('<%= u form_authenticity_token %>'),
+								 'user_id'                 : '<%= current_user.id %>',
+								'format'                  : 'json',
+								'attachable_id'			  : '<%= @entity.id %>',
+								'attachable_type'			  : '<%= @for_class %>',
+								'group_id'					  : '<%= type %>'
+						 }
+					});
+					$('#asset_submit_<%= type %>').click(function(event){
+						event.preventDefault();
+						$('#asset_<%= type %>').uploadifyUpload();
+					});
+				});
+			</script>	  
+			<% form_for Asset.new, :url => '/assets/add', :html => {:multipart => true} do |f| %>
+					<p>
+					<%= f.file_field :data, :id => "asset_#{type}" %>
+				</p>
+				<p><%= f.submit "Upload", :id=>"asset_submit_#{type}", :class=>"green-button round" %></p>
+			<% end %>
+			<div id="uploaded_assets_<%= type %>">
+				<ul id="sortable_assets_<%= type %>" class="ui-sortable" unselectable="on">
+					<%= render :partial => eval("@entity.assets_#{type}") %>
+				</ul>
+				<br clear="all" />
+				<div id="div_for_asset_update_form_<%= type %>" class="update_assets round"></div>
+				<br clear="all" />
+				<% if(eval("@entity.assets_#{type}").size > 0) %>
+					<div id="reorder_div_<%= type %>">
+						<input id="reorder_submit_btn_<%= type %>" type="button" value="Reorder" class="green-button round">
+					</div>
+				<% else %>
+					<div id="reorder_div_<%= type %>" style="display:none;">
+						<input id="reorder_submit_btn_<%= type %>" type="button" value="Reorder" class="green-button round">
+					</div>
+				<% end %>
+			</div>
+		</div>
+	<% end %>
+</div>

@@ -1,0 +1,11 @@
+showNotice("Label updated!");
+$("#update_asset_loader").hide();
+$("#update_asset_submit").show();
+$("#edit_asset_<%= @asset.id %>").attr("name", "<%= @asset.name %>");
+
+$("#label_<%= @asset.id %>").html("<%= @asset.name %>");
+$("#label_<%= @asset.id %>").show();
+$("#select_label_<%= @asset.id %>").hide();
+		
+//$.fn.colorbox.close();
+

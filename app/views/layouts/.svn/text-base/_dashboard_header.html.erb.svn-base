@@ -1,0 +1,33 @@
+<div>
+	<div class="fl width30">
+		<a href="/">
+			<img src="<%= asset_path('austin-health-care.png') %>"/>
+		</a>
+	</div>
+	<div class="fl width30">
+		&nbsp;
+	</div>
+	<div class="fr">
+		<% if current_user %>
+			Welcome <%= current_user.name %> &nbsp;  
+			<%= link_to "My Account",dashboard_path, :class => "btn btn_green" %> &nbsp;  	
+			<%= link_to "Logout",destroy_user_session_path, :method => :delete, :class => "btn btn_red" %>
+		<% else %>
+			<%= link_to "Login",new_user_session_path, :class => "btn btn_blue" %> &nbsp;  
+			<%= link_to "Register",new_registration_path(:user), :class => "btn btn_green" %>
+		<% end %> 
+	</div>
+	<div class="clr"></div>
+</div>
+<div id="notice_div" align="center" style="display:none;" class="notic_div" >
+	<span id="notice" class="notice_top">
+		<%= flash[:notice] %>	
+	</span>
+</div>
+<script type="text/javascript">
+	jQuery(document).ready(function(){
+		<% if flash[:notice].present? %>
+			showNotice("<%= flash[:notice] %>");
+		<% end %>
+	});
+</script>

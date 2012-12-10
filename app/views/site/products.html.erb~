@@ -1,0 +1,15 @@
+<div class="category-title-div">
+	<% if params[:category].present? %>
+		<strong><%= params[:category] %></strong>
+	<% else %>
+		All Products
+	<% end %>
+</div>
+<div>
+	<%= render :partial => "products/snap", :collection => @products, :as => :product %>
+	<div class="clr"></div>
+</div>
+<div>
+	<%= paginate(@products) %>
+</div>
+

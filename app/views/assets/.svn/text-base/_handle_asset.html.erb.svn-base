@@ -1,0 +1,45 @@
+<% f.fields_for :assets do |fields| %>
+
+<table width="100%" border="1" class="form-table" cellpadding="5">
+	<input name="asset_type" value="<%= variable.to_s %>" type="hidden" />
+   <tr>
+     <td colspan="6" class="highlight">
+		    Description for the asset
+     </td>
+	</tr>
+	<tr> 
+		<td valign="top" align="right" width="160">
+			<%= f.label :Description %>
+			 <%= hidden_field_tag :entity_type, entity_type  %>
+		</td>
+		<td>
+			<textarea rows="4" id="<%= variable.to_s %>_data_description" cols="100"></textarea>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="2" class="highlight">
+			Image
+		</td>
+	</tr>
+ <tr >
+ <td colspan="2">
+     Display name for Asset: <input id="<%= variable.to_s %>_data_title" type="text" /> 
+		<input id="<%= variable.to_s %>_data" type="file" />
+	</td>
+ <tr>
+ 
+<tr>
+ <td colspan="2"> 
+ (Max size for each file: <%= eval("Asset::Max_Attachment_Size")/1.megabyte%>MB)
+   <div id="<%= variable.to_s %>_attachment_list"><ul id="<%= variable.to_s %>_pending_files"></ul></div>
+		<script type="text/javascript">
+			var multi_selector = new MultiSelector($('<%= variable.to_s %>_pending_files'), "<%= variable %>");
+			multi_selector.addElement($('<%= variable.to_s %>_data'), $('<%= variable.to_s %>_data_title'),  $('<%= variable.to_s %>_data_description'));
+		</script>
+	</td>
+
+</tr>
+</table>  
+ 
+<% end %>
+

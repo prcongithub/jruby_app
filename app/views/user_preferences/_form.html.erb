@@ -1,0 +1,36 @@
+<%= form_for(@user_preference, :remote => true, :html => { :id => "user_preference_form" }) do |f| %>
+  <% if @user_preference.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@user_preference.errors.count, "error") %> prohibited this user_preference from being saved:</h2>
+
+      <ul>
+      <% @user_preference.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+	<% if @user_preference.user_id.present? %>
+		<%= f.hidden_field :user_id %>
+	<% else %>
+		<div class="field">
+		  <%= f.label :user_id %><br />
+		  <%= f.select :user_id, get_user_options %>
+		</div>
+	<% end %>
+  <% if @user_preference.item_id.present? %>
+  	<%= f.hidden_field :item_id %>
+	<% else %>
+	  <div class="field">
+		  <%= f.label :item_id %><br />
+		  <%= f.select :item_id, get_item_options %>
+		</div>
+	<% end %>
+  <div class="field">
+    <%= f.label :set_your_preference_for_this_product %><br />
+    <%= f.select :preference, PREFERENCES %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

@@ -1,0 +1,117 @@
+<% at = types %>
+<% at.each do |type| %>
+	<div class="box">
+		<div class="pad5">
+			<strong class="font16"><%= type %></strong>
+		</div>
+		<% asset_type = entity.reflections[type.to_sym].class_name %>
+		<% asset_class = eval(asset_type) %>
+		<div class="admin-asset-box">
+			<style>
+				#sortable_assets_<%= entity.id %>_<%= type %> { list-style-type: none; margin: 0; padding: 0; }
+				#sortable_assets_<%= entity.id %>_<%= type %> li { margin: 3px 3px 3px 0; padding: 1px; float: left; font-size: 10px; text-align: center;min-height: 110px;  }
+				#sortable_assets_<%= entity.id %>_<%= type %> li img {padding:1px; border:1px solid #ccc; cursor: pointer; width:80px;}
+			</style>
+			<script type="text/javascript">
+				jQuery(document).ready(function(jQuery){
+					jQuery(function() {
+						jQuery("#sortable_assets_<%= entity.id %>_<%= type %>").sortable({
+							stop: function(event, ui) { jQuery("#reorder_submit_btn_<%= entity.id %>_<%= type %>").click(); }
+						});
+						jQuery("#sortable_assets_<%= entity.id %>_<%= type %>").disableSelection();  
+					});
+		
+					jQuery('#reorder_submit_btn_<%= entity.id %>_<%= type %>').click(function(event){
+						var order = [];
+						order = jQuery("#sortable_assets_<%= entity.id %>_<%= type %>").sortable('toArray');
+						var final_order = "";
+						var final_order = ""
+						for (x = 0; x < order.length; x++){
+							var temp = order[x].substring(16, order[x].length);
+							final_order +=  (temp + ",");
+					 	} 
+					 	if(final_order != ""){	
+					 		var query = final_order.substring(0, final_order.length - 1);
+							var url = "/assets/reorder";
+							var dataHash = {group_id: "<%= type %>",entity_id: "<%= entity.id %>",class_name: "<%= entity.class.to_s %>",order_string: query};
+					 		jsRequest(url,dataHash,null,null);
+					 	}
+					});
+				});
+
+				function show_update_asset_<%= entity.id %>_<%= type %>(asset_id){
+					var url = "/assets/show_update_asset";
+					var dataHash = {asset_id: asset_id, update_div: "div_for_asset_update_form_<%= entity.id %>_<%= type %>"};
+					jsRequest(url,dataHash,null,null);
+				}
+			
+				jQuery(document).ready(function(jQuery) {
+					jQuery('#asset_<%= entity.id %>_<%= type %>').click(function(event){
+						event.preventDefault();
+					});
+					jQuery('#asset_<%= entity.id %>_<%= type %>').uploadify({
+						'swf'  		: '<%= asset_path("uploadify/uploadify.swf") %>',
+						'uploader'    		: '<%= get_domain %>/assets/add',
+						'multi'      		: true,
+						'cancelImg'			: "<%= asset_path('cancel.png') %>",
+						'auto'				: true,
+						onQueueComplete : function(queueData){
+							showNotice(queueData.uploadsSuccessful +" files uploaded successfully");
+						},
+						onUploadError: function(file, errorCode, errorMsg, errorString) {
+		          showNotice('The file ' + file.name + ' could not be uploaded: ' + errorString);
+		        },
+						onUploadSuccess : function(file, data, response) { 
+							jQuery("#reorder_div_<%= entity.id %>_<%= type %>").show();
+							var dat = eval('(' + data + ')');
+							if(dat.result == "success"){
+								jQuery("#upload_errors_<%= entity.id %>_<%= type %>").hide();
+								jQuery.getScript(dat.asset);
+							}else{
+								var errors =  dat.asset.split(',');
+								var error_message = "";
+								for(var i = 0; i < errors.length; i++){
+									error_message += "<li>" + errors[i] + "</li>"
+								}
+								jQuery("#upload_errors_<%= entity.id %>_<%= type %>").show();
+								jQuery("#upload_errors_<%= entity.id %>_<%= type %>").html("<ul>" + error_message + "</ul>");
+							}
+						},
+						formData: {
+								'_method': 'post',
+								'_http_accept': 'application/javascript',
+							  'authenticity_token': "<%= form_authenticity_token %>",
+							  'user_id'                 : '<%= current_user.id %>',
+								'format'                  : 'json',
+								'attachable_id'			  : '<%= entity.id %>',
+								'attachable_type'			  : '<%= entity.class.to_s %>',
+								'asset_type'			  : '<%= asset_type %>',
+								'update_div' : "sortable_assets_<%= entity.id %>_<%= type %>",
+								'group_id'					  : '<%= type %>'
+							 }
+					});
+					jQuery('#asset_submit_<%= entity.id %>_<%= type %>').click(function(event){
+						event.preventDefault();
+						jQuery('#asset_<%= entity.id %>_<%= type %>').uploadifyUpload();
+					});
+				});
+			</script>	  
+			<p>
+				<span id="asset_<%= entity.id %>_<%= type %>"></span>
+			</p>
+			<div id="uploaded_assets_<%= entity.id %>_<%= type %>">
+				<ul id="sortable_assets_<%= entity.id %>_<%= type %>" class="ui-sortable" unselectable="on">
+					<% assets = eval("entity.#{type}") %>
+					<% assets.each do |asset| %>
+						<%= render :partial => "assets/asset", :locals => {:asset => asset} %>
+					<% end %>
+				</ul>
+				<br clear="all" />
+				<div id="div_for_asset_update_form_<%= entity.id %>_<%= type %>" class="update_assets round"></div>
+				<div id="upload_errors_<%= entity.id %>_<%= type %>" class="error"></div>
+				<br clear="all" />
+			</div>
+		</div>
+	</div>	
+<% end %>
+<div class="clr"></div>

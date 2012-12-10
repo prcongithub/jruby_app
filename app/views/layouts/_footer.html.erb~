@@ -1,0 +1,14 @@
+<footer>	
+	<div class="shopping-footer"  style="text-align:center;">
+		<ul>
+			<li style="display:inline-block;"><a href="">Home</a></li>
+			<li style="display:inline-block;"><a href="">About Us</a></li>
+			<li style="display:inline-block;"><a href="">Services</a></li>
+			<li style="display:inline-block;"><a href="">Products</a></li>
+			<li style="display:inline-block;"><a style="border:none;" href="">Contact Us</a></li>
+		</ul>
+		<div class="clr"></div>
+		<div style="font-size:11px;">Copyright &copy;2012 Online Shopping. All Rights Reserved.</div>
+	</div>
+	<div class="clr"></div>
+</footer>	

@@ -1,0 +1,10 @@
+<%= yield %>
+$(document).ready(function(){
+	$(".admin_link").each(function(){
+		if($(this).is("a")){
+			$(this).attr("data-remote","true");
+		}
+	});
+});
+$(".center_image").hide();
+

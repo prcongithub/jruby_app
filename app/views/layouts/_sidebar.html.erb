@@ -1,0 +1,20 @@
+<div class="shopping-left-filter">
+	<div class="left-filter-title">See All Categories</div>
+	<div class="shopping-product-nav">
+		<ul class="product-nav">
+			<% CATEGORIES.each do |category| %>
+				<li><a href="/site/products?category=<%= category %>"><%= category %> (<%= Product.where(:category => category).count %>)</a></li>
+			<% end %>
+		</ul>					
+	</div>
+</div>
+<div class="shopping-brands-div">
+	<div class="brands-nav-title">Top Products</div>
+	<div class="brands-nav">
+		<ul>
+			<% get_top_products(4).each do |product| %>
+				<li><a href="<%= product_details_path(product) %>"><img src="<%= product.logo.url(:original) rescue asset_path('product_logo.jpg') %>"></a></li>
+			<% end %>
+		</ul>
+	</div>
+</div>

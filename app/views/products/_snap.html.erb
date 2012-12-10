@@ -1,0 +1,12 @@
+<div class="category-product-div">
+	<a href="<%= product_details_path(product) %>">
+		<div class="category-product">
+			<div class="c-product-small-img"><img src="<%= product.logo.url() rescue asset_path('product_logo.jpg') %>" width="130" height="152"></div>
+			<div class="c-product-title"><%= product.name %></div>
+			<div class="c-product-price">
+				<div class="price">Rs. <%= product.price %></div>
+			</div>
+			<div class="clr"></div>
+		</div>
+	</a>
+</div>

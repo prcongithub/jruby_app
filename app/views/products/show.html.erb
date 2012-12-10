@@ -1,0 +1,37 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Name:</b>
+  <%= @product.name %>
+</p>
+
+<p>
+  <b>Price:</b>
+  <%= @product.price %>
+</p>
+
+<p>
+  <b>Description:</b>
+  <%= @product.description %>
+</p>
+
+<p>
+	<div>
+		<div>Logo</div>
+		<%= render :partial => "assets/asset", :locals => {:asset => @product.logo} %>
+		<div class="clr"></div>
+	</div>
+</p>
+
+<p>
+	<div>
+		<div>Photos</div>
+		<% @product.photos.each do |photo| %>
+			<%= render :partial => "assets/asset", :locals => {:asset => photo} %>
+		<% end %>
+		<div class="clr"></div>
+	</div>
+</p>
+
+<%= link_to 'Edit', edit_product_path(@product) %> |
+<%= link_to 'Back', products_path %>

@@ -1,0 +1,12 @@
+<div>
+Asset Id: <%= @asset.id %> <br/>
+<%= link_to_remote "Remove", :url => {:controller => :assets, :action => :destroy, :id => @asset.id, :update_id => "div_for_asset_update_form_#{@asset.group_id}"}, :method => :delete %><br/>
+<span id="asset_<%= @asset.id %>"></span>
+<br />
+<form></form>
+<% remote_form_for @asset do |fo| %>
+	<%= fo.text_field :display_name %><br />
+	<%= fo.text_area :description, :rows => 2, :columns => 30 %><br />
+	<%= fo.submit "Save" %><br />
+<% end %>
+</div>

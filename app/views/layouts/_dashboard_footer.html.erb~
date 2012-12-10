@@ -1,0 +1,3 @@
+<div>
+	Copyright <%= Time.now.year %> Austin Health Care Pune.
+</div>
